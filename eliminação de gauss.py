@@ -19,7 +19,8 @@ def dividir_linha(linha: list, constante: float):
 
 def zerar_elementos_abaixo(matriz: list, i: int, j: int, reverse: bool = False):
     
-    degrau = matriz[i][j] # degrau -> parte da escadinha
+    degrau: float = matriz[i][j] # degrau -> parte da escadinha
+    print(f"{degrau =}")
     linha_degrau = matriz[i] 
     if reverse:
         inicio = i - 1
@@ -35,7 +36,7 @@ def zerar_elementos_abaixo(matriz: list, i: int, j: int, reverse: bool = False):
              pass
         else:
             print(matriz[k][j])
-            constante = matriz[k][j] / degrau
+            constante = matriz[k][j] / float(degrau)
             matriz[k] = zerar_item_pivo(linha_degrau, matriz[k], constante)
     return matriz
     
@@ -73,7 +74,7 @@ def eh_linha_nao_nula(linha: list) -> bool:
     """
 
     saldo = 0
-    for item in linha: saldo += item
+    for item in linha: saldo += abs(item)
     return bool(saldo)
 
 
@@ -84,14 +85,16 @@ def eh_coluna_nao_nula(matriz: list, j: int) -> bool:
     """
     saldo = 0
 
-    for i in range(len(matriz)): saldo += matriz[i][j]
+    for i in range(len(matriz)): saldo += abs(matriz[i][j])
     return bool(saldo)
         
 
+####################################################################################
+
 matriz = receber_matriz()
         
-i=0
-for i in range(len(matriz[i])): # deleta as colunas totalmente nulas
+
+for i in range(len(matriz[0])): # deleta as colunas totalmente nulas
     if not eh_coluna_nao_nula(matriz, i): # contraintuitivo, pq i vira j
         for j in range(len(matriz)):
             del matriz[j][i]
@@ -104,6 +107,7 @@ for i in range(len(matriz)): #deleta as linhas totalmente nulas
     if not eh_linha_nao_nula(matriz[i]):
         del matriz[i]
     
+    # vai dar problema
 
 i=0
 j=0
@@ -124,10 +128,11 @@ while i < len(matriz):
 
 
 i = len(matriz) - 1
-j = len(matriz[0]) - 2
+j = i
 print("vamo la")
 while i > 0:
-    matriz[i] = zerar_elementos_abaixo(matriz, i, j, reverse = False)
+    print(matriz, "\n", i, "  ", j)
+    matriz = zerar_elementos_abaixo(matriz, i, j, reverse = True)
     i -= 1
     j -= 1
 
