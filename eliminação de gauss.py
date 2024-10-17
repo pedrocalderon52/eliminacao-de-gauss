@@ -17,16 +17,24 @@ def dividir_linha(linha: list, constante: float):
     
 
 
-def zerar_elementos_abaixo(matriz: list, i: int, j: int):
+def zerar_elementos_abaixo(matriz: list, i: int, j: int, reverse: bool = False):
     
     degrau = matriz[i][j] # degrau -> parte da escadinha
     linha_degrau = matriz[i] 
-
+    if reverse:
+        inicio = i - 1
+        fim = -1
+        passo = -1
+    else:
+        inicio = i+1
+        fim = len(matriz)
+        passo = 1
     
-    for k in range(i+1, len(matriz)): # percorrer os itens abaixo do degrau
+    for k in range(inicio, fim, passo): # percorrer os itens abaixo do degrau
         if matriz[k][j] == 0: # verifica se o item abaixo já está zerado 
              pass
         else:
+            print(matriz[k][j])
             constante = matriz[k][j] / degrau
             matriz[k] = zerar_item_pivo(linha_degrau, matriz[k], constante)
     return matriz
@@ -88,6 +96,10 @@ for i in range(len(matriz[i])): # deleta as colunas totalmente nulas
         for j in range(len(matriz)):
             del matriz[j][i]
 
+#tem que criar uma função de verificação da coluna junto à matriz das incógnitas
+
+
+
 for i in range(len(matriz)): #deleta as linhas totalmente nulas
     if not eh_linha_nao_nula(matriz[i]):
         del matriz[i]
@@ -96,6 +108,7 @@ for i in range(len(matriz)): #deleta as linhas totalmente nulas
 i=0
 j=0
 
+# transforma a matriz em uma triangular superior, com os itens da escada sendo iguais a 1
 while i < len(matriz):
     while j < len(matriz[i]) - 1:
         if matriz[i][j] != 0:
@@ -109,12 +122,17 @@ while i < len(matriz):
             matriz.append(matriz[i])
             del matriz[i]
 
-            
+
+i = len(matriz) - 1
+j = len(matriz[0]) - 2
+print("vamo la")
+while i > 0:
+    matriz[i] = zerar_elementos_abaixo(matriz, i, j, reverse = False)
+    i -= 1
+    j -= 1
+
 print(matriz)
 
-    
-
-    
 
 
 
