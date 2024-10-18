@@ -1,17 +1,24 @@
+# trabalho de álgebra e geometria analítica
+# integrantes: Pedro Calderón Nunes, Isaac Lovisi, Lucas Oliveira de Carvalho Mendes, Claudiano Pinto de Oliveira Júnior
+
+# programa que resolve sistemas lineares pelo método da eliminação de gauss
+
+
 def zerar_item_pivo(linha_pivo: list, linha_a_zerar: list, constante: float) -> list:
     """
-    subtrai uma linha por uma constante * linha pivô
-    linha_pivo = linha que terá os elementos zerados abaixo
-
-    isso zera o item abaixo do pivô (degrau) da escadinha
-
-
+    Subtrai uma linha por uma constante * linha pivô
+    Linha_pivo = linha que terá os elementos zerados abaixo
+    Isso zera o item abaixo do pivô (degrau) da escadinha
     """
+
     linha_pivo = [linha_pivo[k] * constante for k in range(len(linha_pivo))]
     return [linha_a_zerar[k] - linha_pivo[k] for k in range(len(linha_pivo))]
 
 
 def dividir_linha(linha: list, constante: float):
+    """
+    Divide uma linha por uma constante
+    """
     return [linha[i] / constante for i in range(len(linha))]
 
     
@@ -20,14 +27,13 @@ def dividir_linha(linha: list, constante: float):
 def zerar_elementos_abaixo(matriz: list, i: int, j: int, reverse: bool = False):
     
     degrau: float = matriz[i][j] # degrau -> parte da escadinha
-    print(f"{degrau =}")
     linha_degrau = matriz[i] 
     if reverse:
         inicio = i - 1
         fim = -1
         passo = -1
     else:
-        inicio = i+1
+        inicio = i + 1
         fim = len(matriz)
         passo = 1
     
@@ -35,15 +41,26 @@ def zerar_elementos_abaixo(matriz: list, i: int, j: int, reverse: bool = False):
         if matriz[k][j] == 0: # verifica se o item abaixo já está zerado 
              pass
         else:
-            print(matriz[k][j])
-            constante = matriz[k][j] / float(degrau)
+            constante = matriz[k][j] / degrau # Ln = Ln - k * Lx, k = matriz[x, j] / matriz [n, j]
             matriz[k] = zerar_item_pivo(linha_degrau, matriz[k], constante)
     return matriz
     
 
+def receber_incognitas() -> list:
+    """
+    Recebe uma string e a transforma em uma lista de incognitas
+    """
+    lista_incognitas = input("Digite a matriz dos coeficientes, separadas por vírgulas: \n")
+    lista_incognitas = lista_incognitas.strip(",")
+    lista_incognitas = lista_incognitas.split()
+    return lista_incognitas
+
 
 def receber_matriz() -> list:
-    matriz = input("Digite a matriz aumentada (números separados por espaços são da mesma linha e a vírgula é a quebra de linha)")
+    """
+    Recebe uma string e a transforma em uma matriz de floats
+    """
+    matriz = input("Digite a matriz aumentada (números separados por espaços são da mesma linha e a vírgula é a quebra de linha): \n")
     matriz = matriz.split(",")
     for i, item in enumerate(matriz):
         item = item.strip()
@@ -55,7 +72,7 @@ def receber_matriz() -> list:
 def linhas_validas(matriz: list) -> bool:
 
     """
-    verifica validade das linhas
+    Verifica validade das linhas
     """
 
     tamanho = len(matriz[0])
@@ -70,7 +87,7 @@ def linhas_validas(matriz: list) -> bool:
 def eh_linha_nao_nula(linha: list) -> bool:
 
     """
-    verifica se a linha é composta apenas por elementos 0
+    Verifica se a linha é composta apenas por elementos 0
     """
 
     saldo = 0
@@ -81,7 +98,7 @@ def eh_linha_nao_nula(linha: list) -> bool:
 def eh_coluna_nao_nula(matriz: list, j: int) -> bool:
 
     """
-    verifica se a coluna i da matriz recebida é não nula
+    Verifica se a coluna i é composta apenas por elementos 0
     """
     saldo = 0
 
@@ -91,24 +108,28 @@ def eh_coluna_nao_nula(matriz: list, j: int) -> bool:
 
 ####################################################################################
 
-matriz = receber_matriz()
-        
+
+matriz: list = receber_matriz()
+while not linhas_validas(matriz):
+    print("Digite uma matriz válida!!\n\n")
+    matriz: list = receber_matriz()
+
+
+incognitas: list = receber_incognitas()
+
+while len(incognitas) != len(matriz[0])- 1: # verifica se o numero de incognitas é igual ao numero de colunas  
+    print("Insira uma quantidade válida de incógnitas")
+    incognitas = receber_incognitas()
 
 for i in range(len(matriz[0])): # deleta as colunas totalmente nulas
     if not eh_coluna_nao_nula(matriz, i): # contraintuitivo, pq i vira j
         for j in range(len(matriz)):
             del matriz[j][i]
 
-#tem que criar uma função de verificação da coluna junto à matriz das incógnitas
-
-
-
-for i in range(len(matriz)): #deleta as linhas totalmente nulas
+for i in range(len(matriz)): # deleta as linhas totalmente nulas
     if not eh_linha_nao_nula(matriz[i]):
         del matriz[i]
     
-    # vai dar problema
-
 i=0
 j=0
 
@@ -129,15 +150,10 @@ while i < len(matriz):
 
 i = len(matriz) - 1
 j = i
-print("vamo la")
 while i > 0:
-    print(matriz, "\n", i, "  ", j)
     matriz = zerar_elementos_abaixo(matriz, i, j, reverse = True)
     i -= 1
     j -= 1
 
-print(matriz)
-
-
-
-
+for i, incognita in enumerate(incognitas):
+    print(f"{incognita} = {matriz[i][len(matriz)]}")
