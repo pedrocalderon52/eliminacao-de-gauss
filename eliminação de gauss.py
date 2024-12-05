@@ -51,7 +51,7 @@ def receber_incognitas() -> list:
     Recebe uma string e a transforma em uma lista de incognitas
     """
     lista_incognitas = input("Digite a matriz dos coeficientes, separadas por vírgulas: \n")
-    lista_incognitas = lista_incognitas.strip(",")
+    lista_incognitas = lista_incognitas.replace(",", " ")
     lista_incognitas = lista_incognitas.split()
     return lista_incognitas
 
